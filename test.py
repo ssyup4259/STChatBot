@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-import re
-import requests
 import urllib.request
 import urllib.parse
 import openpyxl
@@ -9,23 +7,20 @@ import googlemaps
 
 from threading import Thread
 from bs4 import BeautifulSoup
-from flask import Flask, request, session
+from flask import Flask, request
 from slack import WebClient
-from slack.web.classes import extract_json
 from slack.web.classes.blocks import *
 from slack.web.classes.elements import *
 from slack.web.classes.interactions import MessageInteractiveEvent
 from slackeventsapi import SlackEventAdapter
 from random import shuffle
 
-
-
 SLACK_TOKEN = "?"
 SLACK_SIGNING_SECRET = "?"
 app = Flask(__name__)
 slack_events_adaptor = SlackEventAdapter(SLACK_SIGNING_SECRET, "/listening", app)
 slack_web_client = WebClient(token=SLACK_TOKEN)
-# app.secret_key = b'1234qwer'
+
 # xlm 읽어서 tours에 담아 놓기
 filename = "seoul_tour.xlsx"
 book = openpyxl.load_workbook(filename)
@@ -36,6 +31,7 @@ sheet = book.active
 gmaps_key = '?'
 gmaps = googlemaps.Client(key=gmaps_key)
 
+# 비오는 중인지 알 수 있는 전역 변수
 gRain =""
 
 tours = []
@@ -56,6 +52,8 @@ for i in range (2, sheet.max_row) :
     tours.append(tour)
 shuffle(tours)
 
+# 쓰레드를 통해 분기 나누기
+# 멘션 입력
 def inputText(channel, text):
     global gRain
     if "hi" in text:
@@ -131,7 +129,7 @@ def inputText(channel, text):
                         index += 1
                 block2 = SectionBlock(
                     accessory=block1,
-                    text="*" + titem['Category'] + "이에요*\n 상호명: " + titem['Trade_Name'] + " 주소: " + titem['Old_address']
+                    text="*" + titem['Category'] + "입니다*\n 상호명: " + titem['Trade_Name'] + " 주소: " + titem['Old_address']
                 )
 
                 tmp = gmaps.geocode(titem['New_address'])
@@ -160,8 +158,11 @@ def inputText(channel, text):
                 text="서울시 내에 존재하는 구단위를 입력해주세요 오타 없이요 제발"
             )
 
+# 쓰레드를 통해 분기 나누기
+# 버튼 입력
 def buttonText(click_event):
     global gRain
+    # 네이버 날씨 크롤링
     location = '역삼동'
     enc_location = urllib.parse.quote(location + '+날씨')
     url = 'https://search.naver.com/search.naver?ie=utf8&query=' + enc_location
