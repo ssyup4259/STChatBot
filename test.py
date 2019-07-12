@@ -20,8 +20,8 @@ from random import shuffle
 
 
 
-SLACK_TOKEN = "xoxb-679670845042-684739368241-FUObixh0ZYJw7iIcOMLaX2BT"
-SLACK_SIGNING_SECRET = "f862f7cfed1c82868e9485b4870d19b5"
+SLACK_TOKEN = "?"
+SLACK_SIGNING_SECRET = "?"
 app = Flask(__name__)
 slack_events_adaptor = SlackEventAdapter(SLACK_SIGNING_SECRET, "/listening", app)
 slack_web_client = WebClient(token=SLACK_TOKEN)
@@ -33,7 +33,7 @@ sheet = book.worksheets[0]
 sheet = book.active
 
 # 구글 맵 키
-gmaps_key = 'AIzaSyAVES7wI90_RMlHaDjhceIWVRslqj413kM'
+gmaps_key = '?'
 gmaps = googlemaps.Client(key=gmaps_key)
 
 gRain =""
