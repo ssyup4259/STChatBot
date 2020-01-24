@@ -53,7 +53,7 @@ for i in range (2, sheet.max_row) :
 shuffle(tours)
 
 # 쓰레드를 통해 분기 나누기
-# 멘션 입력
+# 멘션 입력 하는곳
 def inputText(channel, text):
     global gRain
     if "hi" in text:
